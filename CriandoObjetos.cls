@@ -34,7 +34,7 @@ End Function
 
 'Seta o workbook na propriedade da classe
 Public Function SetaWorkbook(ByVal pathEndereco As String, _
-                             ByRef InstanciaExcelnew As InstanciaExcelnew) As Workbook
+                             ByRef InstanciaExcel As InstanciaExcel) As Workbook
     
     Dim fso As Scripting.FileSystemObject: Set fso = New Scripting.FileSystemObject
     Dim pasta As Scripting.folder
@@ -49,7 +49,7 @@ Public Function SetaWorkbook(ByVal pathEndereco As String, _
     fileName = arquivo.Name
     
     'Procura pelo workbook na instancia
-    For Each Workbook In InstanciaExcelnew.xls.Workbooks
+    For Each Workbook In InstanciaExcel.xls.Workbooks
         
         'Se achar o workbook em algum workbook
         If Workbook.Name = fileName Then
