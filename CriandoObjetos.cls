@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Compare Database
 Option Explicit
 
 'Abre um arquivo no path selecionado
@@ -28,41 +29,8 @@ Public Function NomeDoArquivo(ByVal pathEndereco As String) As String
     Set arquivo = fso.GetFile(pathEndereco)
 
     'Retorna o nome do arquivo
-    NomeDoArquivo = arquivo.Name
+    NomeDoArquivo = arquivo.name
     
-End Function
-
-'Seta o workbook na propriedade da classe
-Public Function SetaWorkbook(ByVal pathEndereco As String, _
-                             ByRef InstanciaExcel As InstanciaExcel) As Workbook
-    
-    Dim fso As Scripting.FileSystemObject: Set fso = New Scripting.FileSystemObject
-    Dim pasta As Scripting.folder
-    Dim arquivo As Scripting.File
-    Dim Workbook As Workbook
-    Dim fileName As String
-    
-    'Set o arquivo do endereço
-    Set arquivo = fso.GetFile(pathEndereco)
-    
-    'Nome do workbook
-    fileName = arquivo.Name
-    
-    'Procura pelo workbook na instancia
-    For Each Workbook In InstanciaExcel.xls.Workbooks
-        
-        'Se achar o workbook em algum workbook
-        If Workbook.Name = fileName Then
-            
-            'Return
-            Set SetaWorkbook = Workbook
-            Exit Function
-        End If
-    Next Workbook
-
-    'Retorna o nome do arquivo
-    'NomeDoArquivo = arquivo.Name
-
 End Function
 
 'Renomeia o arquivo
@@ -79,18 +47,18 @@ Public Sub RenomeiaArquivo(ByVal pathDoArquivo As String, _
     Set arquivo = fso.GetFile(pathDoArquivo)
         
     'Substitui a extenção de j & '.xlsx"
-    If InStr(1, arquivo.Name, ".xlsx") > 0 Then
-        novoNome = Replace(arquivo.Name, ".xlsx", "")
+    If InStr(1, arquivo.name, ".xlsx") > 0 Then
+        novoNome = Replace(arquivo.name, ".xlsx", "")
         novoNome = novoNome & j & ".xlsx"
     
     'Se for xls
-    ElseIf InStr(1, arquivo.Name, ".xls") > 0 Then
-        novoNome = Replace(arquivo.Name, ".xls", "")
+    ElseIf InStr(1, arquivo.name, ".xls") > 0 Then
+        novoNome = Replace(arquivo.name, ".xls", "")
         novoNome = novoNome & j & ".xls"
     End If
     
     'Renomeia o arquivo
-    arquivo.Name = novoNome
+    arquivo.name = novoNome
     
 End Sub
 
@@ -167,7 +135,7 @@ Public Sub IteraPelosArquivos(ByVal path As String)
     
     'Itera pela lista de arquivos dentro da pasta
     For Each arquivo In pasta.Files
-        Debug.Print arquivo.Name
+        Debug.Print arquivo.name
     Next arquivo
 
 End Sub
@@ -234,35 +202,6 @@ Public Function ArquivoExiste(ByVal path As String) As Boolean
 End Function
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Sub MEDELETE()
-
-    Dim path As String: path = "C:\Users\Fernando\Documents\Teste\"
-    Dim i As Integer
-    Dim CriandoObjetos As CriandoObjetos: Set CriandoObjetos = New CriandoObjetos
-    Dim arrayDePastas(1 To 3) As String
-    
-    'se a pasta não existe, cria a pasta path
-    If CriandoObjetos.PastaExiste(path) = False Then
-        CriandoObjetos.CriarPasta (path)
-    End If
-    
-    'Estrutura das pastas
-    arrayDePastas(1) = path & "Fernando"
-    arrayDePastas(2) = path & "César"
-    arrayDePastas(3) = path & "Vidoto"
-    
-    'Dentro da pasta Teste, criar a estrutura de pastas
-    For i = 1 To UBound(arrayDePastas)
-        
-        'Se a pasta na estrutura de pastas não existe, criar ela no folder
-        If CriandoObjetos.PastaExiste(arrayDePastas(i)) = False Then
-            CriandoObjetos.CriarPasta (arrayDePastas(i))
-        End If
-        
-    Next i
-    
-End Sub
-
 'Cria a tabela dinamica com argumentos
 Public Sub CriaTabelaDinamica(ByVal sheetName As String, _
                               ByVal nomeDaPivot As String, _
@@ -278,7 +217,7 @@ Public Sub CriaTabelaDinamica(ByVal sheetName As String, _
     'Cria a tabela dinamica apenas com argumentos
     wbook.PivotCaches.Create(SourceType:=xlDatabase, _
                                           SourceData:=sourceDaPivotTable, _
-                                          Version:=xlPivotTableVersion14). _
+                                          VERSION:=xlPivotTableVersion14). _
                                           CreatePivotTable TableDestination:=destinoDaPivot, _
                                           TableName:=nomeDaPivot, _
                                           DefaultVersion:=xlPivotTableVersion14
@@ -304,7 +243,7 @@ Public Sub CriarSheet(ByVal nomeDaSheet As String, _
 
     'Adiciona a sheet
     workbookName.Sheets.Add
-    workbookName.Sheets(1).Name = nomeDaSheet
+    workbookName.Sheets(1).name = nomeDaSheet
 
 End Sub
 
@@ -344,7 +283,7 @@ On Error GoTo exitSub
     'Application.DisplayAlerts = False
     
     'Cria o novo workbook nesse método
-    Sheets(sheetAclonar).Copy
+    Sheets(sheetAclonar).copy
     
     'Salva o workbook no local especídifico
     ActiveWorkbook.SaveAs pathDoFolder
@@ -374,7 +313,7 @@ Public Sub OcultaSheet(ByVal sheetName As String)
     For Each sheet In ActiveWorkbook.Worksheets
         
         'Se o nome da sheet for o escolhido, OCULTA
-        If sheet.Name = sheetName Then
+        If sheet.name = sheetName Then
             sheet.Visible = xlSheetHidden
             Exit Sub
         End If
@@ -391,7 +330,7 @@ Public Sub DesOcultaSheet(ByVal sheetName As String)
     For Each sheet In ActiveWorkbook.Worksheets
         
         'Se o nome da sheet for o escolhido, OCULTA
-        If sheet.Name = sheetName Then
+        If sheet.name = sheetName Then
             sheet.Visible = xlSheetVisible
             Exit Sub
         End If
@@ -410,8 +349,8 @@ Public Sub FechaWorkbook(ByVal nomeDoWorkbookComExtensao As String)
     For Each ArquivosAbertos In xls.Workbooks
         
         'Fecha o workbook específico E não salva as alterações
-        If ArquivosAbertos.Name = nomeDoWorkbookComExtensao Or _
-           ArquivosAbertos.Name = "formulario.xlsx" Then
+        If ArquivosAbertos.name = nomeDoWorkbookComExtensao Or _
+           ArquivosAbertos.name = "formulario.xlsx" Then
             ArquivosAbertos.Close False
             Exit Sub
         End If
@@ -460,4 +399,39 @@ On Error Resume Next
 End Sub
 
 
+
+
+
+'Seta o workbook na propriedade da classe
+Public Function SetaWorkbook(ByVal pathEndereco As String, _
+                             ByRef InstanciaExcel As InstanciaExcel) As Workbook
+    
+    Dim fso As Scripting.FileSystemObject: Set fso = New Scripting.FileSystemObject
+    Dim pasta As Scripting.folder
+    Dim arquivo As Scripting.File
+    Dim Workbook As Workbook
+    Dim fileName As String
+    
+    'Set o arquivo do endereço
+    Set arquivo = fso.GetFile(pathEndereco)
+    
+    'Nome do workbook
+    fileName = arquivo.name
+    
+    'Procura pelo workbook na instancia
+    For Each Workbook In InstanciaExcel.xls.Workbooks
+        
+        'Se achar o workbook em algum workbook
+        If Workbook.name = fileName Then
+            
+            'Return
+            Set SetaWorkbook = Workbook
+            Exit Function
+        End If
+    Next Workbook
+
+    'Retorna o nome do arquivo
+    'NomeDoArquivo = arquivo.Name
+
+End Function
 
